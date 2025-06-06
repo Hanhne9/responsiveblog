@@ -1,0 +1,99 @@
+---
+title: "JavaScript ES2024: New Features You Should Know"
+date: "2024-01-20"
+excerpt: "Explore the latest JavaScript ES2024 features including new array methods, temporal API, and more exciting additions to the language."
+author: "Alex Chen"
+category: "web-development"
+tags: ["JavaScript", "ES2024", "Frontend", "Programming"]
+coverImage: "https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=1200&h=630&fit=crop"
+---
+
+# JavaScript ES2024: New Features You Should Know
+
+JavaScript continues to evolve with ES2024 bringing exciting new features that will enhance your development experience. Let's explore the most important additions.
+
+## Array Grouping Methods
+
+The new `Object.groupBy()` and `Map.groupBy()` methods make it easier to group array elements.
+
+\`\`\`javascript
+const products = [
+  { name: 'Laptop', category: 'Electronics', price: 999 },
+  { name: 'Shirt', category: 'Clothing', price: 29 },
+  { name: 'Phone', category: 'Electronics', price: 699 },
+  { name: 'Jeans', category: 'Clothing', price: 79 }
+]
+
+// Group by category
+const grouped = Object.groupBy(products, product => product.category)
+console.log(grouped)
+// {
+//   Electronics: [{ name: 'Laptop', ... }, { name: 'Phone', ... }],
+//   Clothing: [{ name: 'Shirt', ... }, { name: 'Jeans', ... }]
+// }
+\`\`\`
+
+## Temporal API
+
+The new Temporal API provides better date and time handling.
+
+\`\`\`javascript
+// Current date and time
+const now = Temporal.Now.plainDateTimeISO()
+console.log(now.toString()) // 2024-01-20T15:30:00
+
+// Create specific dates
+const birthday = Temporal.PlainDate.from('2024-12-25')
+const meeting = Temporal.PlainTime.from('14:30:00')
+
+// Duration calculations
+const duration = now.until(birthday)
+console.log(duration.days) // Days until birthday
+\`\`\`
+
+## Promise.withResolvers()
+
+A new static method that returns a promise along with its resolve and reject functions.
+
+\`\`\`javascript
+const { promise, resolve, reject } = Promise.withResolvers()
+
+// Use resolve/reject from outside the promise
+setTimeout(() => {
+  resolve('Success!')
+}, 1000)
+
+promise.then(result => console.log(result)) // 'Success!'
+\`\`\`
+
+## Array.fromAsync()
+
+Create arrays from async iterables more easily.
+
+\`\`\`javascript
+async function* asyncGenerator() {
+  yield 1
+  yield 2
+  yield 3
+}
+
+const array = await Array.fromAsync(asyncGenerator())
+console.log(array) // [1, 2, 3]
+\`\`\`
+
+## String.isWellFormed() and String.toWellFormed()
+
+Better handling of Unicode strings.
+
+\`\`\`javascript
+const malformedString = '\uD800' // Lone surrogate
+console.log(malformedString.isWellFormed()) // false
+
+const wellFormed = malformedString.toWellFormed()
+console.log(wellFormed.isWellFormed()) // true
+\`\`\`
+
+## Conclusion
+
+ES2024 brings practical improvements to JavaScript that will make your code more readable and maintainable. Start experimenting with these features in your projects today!
+\`\`\`

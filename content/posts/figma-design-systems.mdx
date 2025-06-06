@@ -1,0 +1,248 @@
+---
+title: "Building Design Systems in Figma: A Complete Guide"
+date: "2024-01-16"
+excerpt: "Learn how to create scalable design systems in Figma with components, variants, tokens, and best practices for team collaboration."
+author: "David Kim"
+category: "design"
+tags: ["Figma", "Design Systems", "UI/UX", "Design"]
+coverImage: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=1200&h=630&fit=crop"
+---
+
+# Building Design Systems in Figma: A Complete Guide
+
+Design systems are the backbone of consistent, scalable design. Figma provides powerful tools to create and maintain design systems that keep your team aligned and productive.
+
+## What is a Design System?
+
+A design system is a collection of reusable components, guided by clear standards, that can be assembled together to build applications.
+
+### Benefits of Design Systems
+
+- **Consistency** across all products
+- **Efficiency** in design and development
+- **Scalability** for growing teams
+- **Quality** through standardization
+
+## Setting Up Your Design System
+
+### 1. Foundation Elements
+
+Start with the basic building blocks:
+
+#### Colors
+\`\`\`
+Primary Colors:
+- Primary 500: #3B82F6
+- Primary 600: #2563EB
+- Primary 700: #1D4ED8
+
+Secondary Colors:
+- Gray 100: #F3F4F6
+- Gray 500: #6B7280
+- Gray 900: #111827
+
+Semantic Colors:
+- Success: #10B981
+- Warning: #F59E0B
+- Error: #EF4444
+\`\`\`
+
+#### Typography
+\`\`\`
+Font Family: Inter
+Font Weights: 400, 500, 600, 700
+
+Heading 1: 48px / 56px
+Heading 2: 36px / 44px
+Heading 3: 24px / 32px
+Body Large: 18px / 28px
+Body: 16px / 24px
+Body Small: 14px / 20px
+Caption: 12px / 16px
+\`\`\`
+
+#### Spacing
+\`\`\`
+4px, 8px, 12px, 16px, 20px, 24px, 32px, 40px, 48px, 64px, 80px, 96px
+\`\`\`
+
+### 2. Creating Components
+
+#### Button Component
+1. Create a base button frame
+2. Add text layer with proper styling
+3. Create component (Ctrl/Cmd + Alt + K)
+4. Add variants for different states
+
+#### Component Variants
+\`\`\`
+Properties:
+- Type: Primary, Secondary, Tertiary
+- Size: Small, Medium, Large
+- State: Default, Hover, Pressed, Disabled
+\`\`\`
+
+### 3. Component Architecture
+
+#### Atomic Design Methodology
+- **Atoms**: Basic elements (buttons, inputs, icons)
+- **Molecules**: Simple combinations (search box, card header)
+- **Organisms**: Complex combinations (navigation, card)
+- **Templates**: Page layouts
+- **Pages**: Specific instances
+
+## Advanced Figma Features
+
+### Auto Layout
+\`\`\`
+Benefits:
+- Responsive components
+- Consistent spacing
+- Easy maintenance
+- Dynamic content handling
+\`\`\`
+
+### Component Properties
+\`\`\`
+Boolean Properties:
+- Show/hide elements
+- Toggle states
+
+Instance Swap:
+- Icon variations
+- Content variations
+
+Text Properties:
+- Dynamic text content
+\`\`\`
+
+### Design Tokens
+
+#### Color Tokens
+\`\`\`
+Primitive Tokens:
+- Blue 500: #3B82F6
+- Red 500: #EF4444
+
+Semantic Tokens:
+- Primary: Blue 500
+- Error: Red 500
+
+Component Tokens:
+- Button Primary Background: Primary
+- Button Primary Text: White
+\`\`\`
+
+#### Using Variables in Figma
+1. Create color variables
+2. Apply to components
+3. Use modes for themes (light/dark)
+
+## Component Documentation
+
+### Component Specs
+\`\`\`
+Button Component:
+- Purpose: Primary actions
+- Usage: Call-to-action buttons
+- Variants: Primary, Secondary, Tertiary
+- States: Default, Hover, Pressed, Disabled
+- Sizes: Small (32px), Medium (40px), Large (48px)
+\`\`\`
+
+### Usage Guidelines
+- When to use each variant
+- Accessibility considerations
+- Do's and don'ts
+- Code implementation notes
+
+## Team Collaboration
+
+### Library Management
+1. **Publish components** to team library
+2. **Version control** with clear release notes
+3. **Update notifications** for team members
+4. **Usage tracking** to understand adoption
+
+### Design System Governance
+- **Design system team** ownership
+- **Contribution guidelines** for new components
+- **Review process** for changes
+- **Regular audits** and updates
+
+## Figma Plugins for Design Systems
+
+### Essential Plugins
+- **Design Tokens**: Export tokens to code
+- **Figma to Code**: Generate code from designs
+- **Stark**: Accessibility checking
+- **Content Reel**: Realistic content generation
+
+### Token Management
+\`\`\`
+Style Dictionary workflow:
+1. Define tokens in Figma
+2. Export with plugin
+3. Transform for platforms
+4. Distribute to development teams
+\`\`\`
+
+## Handoff to Development
+
+### Design Specifications
+- Component anatomy
+- Interaction states
+- Responsive behavior
+- Accessibility requirements
+
+### Code Integration
+\`\`\`css
+/* CSS Custom Properties from Design Tokens */
+:root {
+  --color-primary-500: #3B82F6;
+  --color-primary-600: #2563EB;
+  --spacing-4: 16px;
+  --spacing-6: 24px;
+  --font-size-base: 16px;
+  --line-height-base: 24px;
+}
+
+.button {
+  background-color: var(--color-primary-500);
+  padding: var(--spacing-4) var(--spacing-6);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+}
+\`\`\`
+
+## Maintenance and Evolution
+
+### Regular Reviews
+- Component usage analytics
+- User feedback collection
+- Performance impact assessment
+- Accessibility audits
+
+### Scaling Strategies
+- Multi-brand support
+- Platform-specific adaptations
+- Internationalization considerations
+- Performance optimization
+
+## Best Practices
+
+1. **Start small** and grow incrementally
+2. **Document everything** thoroughly
+3. **Test with real content** regularly
+4. **Gather feedback** from users
+5. **Maintain consistency** across all touchpoints
+6. **Plan for accessibility** from the beginning
+7. **Version control** all changes
+8. **Automate** where possible
+
+## Conclusion
+
+Building a design system in Figma requires careful planning, consistent execution, and ongoing maintenance. When done right, it becomes a powerful tool that accelerates design and development while ensuring consistency across your products.
+
+The key is to start with solid foundations, build incrementally, and always keep your users and team members in mind.
+\`\`\`

@@ -1,0 +1,409 @@
+---
+title: "Python Data Analysis with Pandas: From Beginner to Pro"
+date: "2024-01-14"
+excerpt: "Master data analysis with Python and Pandas. Learn data manipulation, visualization, and statistical analysis techniques with practical examples."
+author: "Dr. Emily Watson"
+category: "programming"
+tags: ["Python", "Pandas", "Data Analysis", "Data Science"]
+coverImage: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&h=630&fit=crop"
+---
+
+# Python Data Analysis with Pandas: From Beginner to Pro
+
+Pandas is the cornerstone of data analysis in Python. This comprehensive guide will take you from basic operations to advanced data manipulation techniques.
+
+## Getting Started with Pandas
+
+### Installation and Setup
+\`\`\`bash
+pip install pandas numpy matplotlib seaborn
+\`\`\`
+
+### Basic Imports
+\`\`\`python
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+\`\`\`
+
+## Data Structures
+
+### Series
+\`\`\`python
+# Creating a Series
+data = pd.Series([1, 2, 3, 4, 5], index=['a', 'b', 'c', 'd', 'e'])
+print(data)
+
+# Series from dictionary
+data_dict = {'apple': 10, 'banana': 20, 'orange': 15}
+fruits = pd.Series(data_dict)
+\`\`\`
+
+### DataFrame
+\`\`\`python
+# Creating a DataFrame
+data = {
+    'Name': ['Alice', 'Bob', 'Charlie', 'Diana'],
+    'Age': [25, 30, 35, 28],
+    'City': ['New York', 'London', 'Tokyo', 'Paris'],
+    'Salary': [50000, 60000, 70000, 55000]
+}
+df = pd.DataFrame(data)
+print(df)
+\`\`\`
+
+## Data Loading and Saving
+
+### Reading Data
+\`\`\`python
+# CSV files
+df = pd.read_csv('data.csv')
+
+# Excel files
+df = pd.read_excel('data.xlsx', sheet_name='Sheet1')
+
+# JSON files
+df = pd.read_json('data.json')
+
+# SQL databases
+import sqlite3
+conn = sqlite3.connect('database.db')
+df = pd.read_sql_query('SELECT * FROM table_name', conn)
+\`\`\`
+
+### Saving Data
+\`\`\`python
+# Save to CSV
+df.to_csv('output.csv', index=False)
+
+# Save to Excel
+df.to_excel('output.xlsx', index=False)
+
+# Save to JSON
+df.to_json('output.json', orient='records')
+\`\`\`
+
+## Data Exploration
+
+### Basic Information
+\`\`\`python
+# Dataset shape
+print(df.shape)
+
+# Column information
+print(df.info())
+
+# Statistical summary
+print(df.describe())
+
+# First/last rows
+print(df.head())
+print(df.tail())
+
+# Column names
+print(df.columns.tolist())
+\`\`\`
+
+### Data Types and Missing Values
+\`\`\`python
+# Check data types
+print(df.dtypes)
+
+# Missing values
+print(df.isnull().sum())
+
+# Unique values
+print(df['column_name'].unique())
+print(df['column_name'].value_counts())
+\`\`\`
+
+## Data Selection and Filtering
+
+### Selecting Columns
+\`\`\`python
+# Single column
+ages = df['Age']
+
+# Multiple columns
+subset = df[['Name', 'Age']]
+
+# Column selection with conditions
+numeric_columns = df.select_dtypes(include=[np.number])
+\`\`\`
+
+### Filtering Rows
+\`\`\`python
+# Boolean indexing
+young_people = df[df['Age'] < 30]
+
+# Multiple conditions
+filtered = df[(df['Age'] > 25) & (df['Salary'] > 55000)]
+
+# Using isin()
+cities = df[df['City'].isin(['New York', 'London'])]
+
+# String operations
+names_with_a = df[df['Name'].str.contains('a', case=False)]
+\`\`\`
+
+### Advanced Selection
+\`\`\`python
+# Using loc (label-based)
+subset = df.loc[0:2, 'Name':'Age']
+
+# Using iloc (position-based)
+subset = df.iloc[0:3, 1:3]
+
+# Query method
+result = df.query('Age > 25 and Salary > 50000')
+\`\`\`
+
+## Data Cleaning
+
+### Handling Missing Values
+\`\`\`python
+# Drop missing values
+df_clean = df.dropna()
+
+# Fill missing values
+df_filled = df.fillna(0)
+df_filled = df.fillna(df.mean())  # For numeric columns
+df_filled = df.fillna(method='forward')  # Forward fill
+
+# Interpolation
+df_interpolated = df.interpolate()
+\`\`\`
+
+### Data Type Conversion
+\`\`\`python
+# Convert to numeric
+df['Age'] = pd.to_numeric(df['Age'], errors='coerce')
+
+# Convert to datetime
+df['Date'] = pd.to_datetime(df['Date'])
+
+# Convert to categorical
+df['City'] = df['City'].astype('category')
+\`\`\`
+
+### Removing Duplicates
+\`\`\`python
+# Check for duplicates
+print(df.duplicated().sum())
+
+# Remove duplicates
+df_unique = df.drop_duplicates()
+
+# Remove duplicates based on specific columns
+df_unique = df.drop_duplicates(subset=['Name', 'Age'])
+\`\`\`
+
+## Data Transformation
+
+### Adding New Columns
+\`\`\`python
+# Simple calculation
+df['Age_in_months'] = df['Age'] * 12
+
+# Conditional column
+df['Age_group'] = df['Age'].apply(lambda x: 'Young' if x < 30 else 'Adult')
+
+# Using np.where
+df['High_earner'] = np.where(df['Salary'] > 60000, 'Yes', 'No')
+\`\`\`
+
+### String Operations
+\`\`\`python
+# String methods
+df['Name_upper'] = df['Name'].str.upper()
+df['Name_length'] = df['Name'].str.len()
+
+# Extract information
+df['First_letter'] = df['Name'].str[0]
+df['Name_parts'] = df['Name'].str.split(' ')
+\`\`\`
+
+### Date Operations
+\`\`\`python
+# Assuming we have a date column
+df['Date'] = pd.to_datetime(df['Date'])
+df['Year'] = df['Date'].dt.year
+df['Month'] = df['Date'].dt.month
+df['Weekday'] = df['Date'].dt.day_name()
+\`\`\`
+
+## Grouping and Aggregation
+
+### Basic Grouping
+\`\`\`python
+# Group by single column
+city_stats = df.groupby('City')['Salary'].mean()
+
+# Group by multiple columns
+group_stats = df.groupby(['City', 'Age_group'])['Salary'].agg(['mean', 'count'])
+
+# Multiple aggregations
+agg_result = df.groupby('City').agg({
+    'Age': ['mean', 'min', 'max'],
+    'Salary': ['mean', 'sum']
+})
+\`\`\`
+
+### Advanced Aggregation
+\`\`\`python
+# Custom aggregation functions
+def salary_range(series):
+    return series.max() - series.min()
+
+custom_agg = df.groupby('City')['Salary'].agg([
+    'mean',
+    ('range', salary_range),
+    ('count', 'count')
+])
+
+# Transform (returns same shape)
+df['Salary_normalized'] = df.groupby('City')['Salary'].transform(
+    lambda x: (x - x.mean()) / x.std()
+)
+\`\`\`
+
+## Data Visualization
+
+### Basic Plots with Pandas
+\`\`\`python
+# Line plot
+df.plot(x='Age', y='Salary', kind='line')
+
+# Bar plot
+df['City'].value_counts().plot(kind='bar')
+
+# Histogram
+df['Age'].plot(kind='hist', bins=10)
+
+# Box plot
+df.boxplot(column='Salary', by='City')
+\`\`\`
+
+### Advanced Visualization with Seaborn
+\`\`\`python
+# Correlation heatmap
+plt.figure(figsize=(10, 8))
+correlation_matrix = df.corr()
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm')
+
+# Pair plot
+sns.pairplot(df, hue='City')
+
+# Distribution plot
+sns.distplot(df['Salary'])
+
+# Box plot
+sns.boxplot(x='City', y='Salary', data=df)
+\`\`\`
+
+## Advanced Techniques
+
+### Pivot Tables
+\`\`\`python
+# Basic pivot table
+pivot = df.pivot_table(
+    values='Salary',
+    index='City',
+    columns='Age_group',
+    aggfunc='mean'
+)
+
+# Multiple values
+pivot_multi = df.pivot_table(
+    values=['Salary', 'Age'],
+    index='City',
+    aggfunc={'Salary': 'mean', 'Age': 'count'}
+)
+\`\`\`
+
+### Merging and Joining
+\`\`\`python
+# Create sample DataFrames
+df1 = pd.DataFrame({'ID': [1, 2, 3], 'Name': ['A', 'B', 'C']})
+df2 = pd.DataFrame({'ID': [1, 2, 4], 'Score': [85, 90, 95]})
+
+# Inner join
+merged = pd.merge(df1, df2, on='ID', how='inner')
+
+# Left join
+merged = pd.merge(df1, df2, on='ID', how='left')
+
+# Concatenation
+combined = pd.concat([df1, df2], axis=0)  # Vertical
+combined = pd.concat([df1, df2], axis=1)  # Horizontal
+\`\`\`
+
+### Time Series Analysis
+\`\`\`python
+# Create time series data
+dates = pd.date_range('2023-01-01', periods=100, freq='D')
+ts_data = pd.DataFrame({
+    'Date': dates,
+    'Value': np.random.randn(100).cumsum()
+})
+ts_data.set_index('Date', inplace=True)
+
+# Resampling
+monthly_avg = ts_data.resample('M').mean()
+weekly_sum = ts_data.resample('W').sum()
+
+# Rolling statistics
+ts_data['Rolling_mean'] = ts_data['Value'].rolling(window=7).mean()
+ts_data['Rolling_std'] = ts_data['Value'].rolling(window=7).std()
+\`\`\`
+
+## Performance Optimization
+
+### Memory Usage
+\`\`\`python
+# Check memory usage
+print(df.memory_usage(deep=True))
+
+# Optimize data types
+df['Category'] = df['Category'].astype('category')
+df['Integer_col'] = df['Integer_col'].astype('int32')
+
+# Use chunking for large files
+chunk_size = 10000
+for chunk in pd.read_csv('large_file.csv', chunksize=chunk_size):
+    # Process each chunk
+    processed_chunk = chunk.groupby('column').sum()
+\`\`\`
+
+### Vectorization
+\`\`\`python
+# Avoid loops, use vectorized operations
+# Bad
+result = []
+for value in df['column']:
+    result.append(value * 2)
+
+# Good
+result = df['column'] * 2
+
+# Use .apply() for complex operations
+df['new_column'] = df['existing_column'].apply(lambda x: complex_function(x))
+\`\`\`
+
+## Best Practices
+
+1. **Always explore your data first** with `.info()`, `.describe()`, and `.head()`
+2. **Handle missing values appropriately** for your use case
+3. **Use vectorized operations** instead of loops
+4. **Choose appropriate data types** to save memory
+5. **Document your analysis** with clear variable names and comments
+6. **Validate your results** with sanity checks
+7. **Use method chaining** for readable code
+
+## Conclusion
+
+Pandas is an incredibly powerful tool for data analysis. With these techniques, you can handle most data manipulation and analysis tasks efficiently. Remember to practice with real datasets and always validate your results.
+
+The key to mastering Pandas is understanding your data and choosing the right tools for each task. Start with simple operations and gradually work your way up to more complex analyses.
+\`\`\`
