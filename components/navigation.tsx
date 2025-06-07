@@ -4,16 +4,22 @@ import type React from "react"
 
 import Link from "next/link"
 import { useState, useEffect } from "react"
-import { Menu, X, BookOpen, Search, Sun, Moon } from "lucide-react"
+import { Menu, X, BookOpen, Search, Sun, Moon, ChevronDown, Folder } from "lucide-react"
 import { useTheme } from "next-themes"
+import { getAllCategories, getAllPosts } from "@/lib/blog"
+import type { BlogPost } from "@/lib/blog"
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
+  const [searchResults, setSearchResults] = useState<BlogPost[]>([])
   const [isScrolled, setIsScrolled] = useState(false)
+  const [categories, setCategories] = useState<string[]>([])
+  const [isCategoriesOpen, setIsCategoriesOpen] = useState(false)
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
+  const [allPosts, setAllPosts] = useState<BlogPost[]>([])
 
   useEffect(() => {
     setMounted(true)
@@ -21,17 +27,45 @@ export function Navigation() {
       setIsScrolled(window.scrollY > 20)
     }
     window.addEventListener("scroll", handleScroll)
+
+    // Load categories and posts
+    const loadData = async () => {
+      const [categoriesData, postsData] = await Promise.all([getAllCategories(), getAllPosts()])
+      setCategories(categoriesData)
+      setAllPosts(postsData)
+    }
+    loadData()
+
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
+  useEffect(() => {
+    if (searchQuery.trim()) {
+      const filtered = allPosts.filter(
+        (post) =>
+          post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          post.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          post.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase())) ||
+          post.category.toLowerCase().includes(searchQuery.toLowerCase()),
+      )
+      setSearchResults(filtered)
+    } else {
+      setSearchResults([])
+    }
+  }, [searchQuery, allPosts])
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
-    if (searchQuery.trim()) {
-      // Implement search functionality
-      console.log("Searching for:", searchQuery)
-      setIsSearchOpen(false)
-      setSearchQuery("")
+    if (searchQuery.trim() && searchResults.length > 0) {
+      // Navigate to first result or show results page
+      window.location.href = `/blog/${searchResults[0].slug}`
     }
+  }
+
+  const handleSearchResultClick = (slug: string) => {
+    setIsSearchOpen(false)
+    setSearchQuery("")
+    window.location.href = `/blog/${slug}`
   }
 
   if (!mounted) return null
@@ -66,6 +100,34 @@ export function Navigation() {
             >
               Home
             </Link>
+
+            {/* Categories Dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setIsCategoriesOpen(!isCategoriesOpen)}
+                className="flex items-center space-x-1 px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-all duration-200"
+              >
+                <span>Categories</span>
+                <ChevronDown className={`h-4 w-4 transition-transform ${isCategoriesOpen ? "rotate-180" : ""}`} />
+              </button>
+
+              {isCategoriesOpen && (
+                <div className="absolute top-full left-0 mt-2 w-48 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md rounded-lg shadow-lg border border-gray-200/20 dark:border-gray-700/20 py-2">
+                  {categories.map((category) => (
+                    <Link
+                      key={category}
+                      href={`/category/${encodeURIComponent(category)}`}
+                      className="flex items-center space-x-2 px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-all duration-200"
+                      onClick={() => setIsCategoriesOpen(false)}
+                    >
+                      <Folder className="h-4 w-4" />
+                      <span className="capitalize">{category}</span>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
             <Link
               href="/about"
               className="px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-all duration-200"
@@ -123,6 +185,25 @@ export function Navigation() {
               >
                 Home
               </Link>
+
+              {/* Mobile Categories */}
+              <div className="px-4 py-2">
+                <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Categories</div>
+                <div className="space-y-1 ml-4">
+                  {categories.map((category) => (
+                    <Link
+                      key={category}
+                      href={`/category/${encodeURIComponent(category)}`}
+                      className="flex items-center space-x-2 px-2 py-1 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <Folder className="h-3 w-3" />
+                      <span className="capitalize text-sm">{category}</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
               <Link
                 href="/about"
                 className="px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-all duration-200"
@@ -165,7 +246,50 @@ export function Navigation() {
                 <X className="h-5 w-5" />
               </button>
             </form>
-            <div className="mt-4 text-sm text-gray-500 dark:text-gray-400">Press Enter to search or Esc to close</div>
+
+            {/* Search Results */}
+            {searchQuery && (
+              <div className="mt-4 max-h-96 overflow-y-auto">
+                {searchResults.length > 0 ? (
+                  <div className="space-y-2">
+                    <div className="text-sm text-gray-500 dark:text-gray-400 mb-3">
+                      Found {searchResults.length} result{searchResults.length !== 1 ? "s" : ""}
+                    </div>
+                    {searchResults.slice(0, 5).map((post) => (
+                      <button
+                        key={post.slug}
+                        onClick={() => handleSearchResultClick(post.slug)}
+                        className="w-full text-left p-3 rounded-lg hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-all duration-200 border border-gray-200/20 dark:border-gray-700/20"
+                      >
+                        <div className="font-medium text-gray-900 dark:text-gray-100 mb-1">{post.title}</div>
+                        <div className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">{post.excerpt}</div>
+                        <div className="flex items-center space-x-2 mt-2">
+                          <span className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-1 rounded-full">
+                            {post.category}
+                          </span>
+                          {post.tags.slice(0, 2).map((tag) => (
+                            <span
+                              key={tag}
+                              className="text-xs bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 px-2 py-1 rounded-full"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                    No articles found for "{searchQuery}"
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div className="mt-4 text-sm text-gray-500 dark:text-gray-400">
+              {searchQuery ? "Click on a result to view the article" : "Press Enter to search or Esc to close"}
+            </div>
           </div>
         </div>
       )}

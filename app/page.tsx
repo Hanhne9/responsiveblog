@@ -1,6 +1,5 @@
 import { getAllPosts } from "@/lib/blog"
 import { BlogCard } from "@/components/blog-card"
-import { Hero } from "@/components/hero"
 import { CategoriesTagsSidebar } from "@/components/categories-tags-sidebar"
 
 export default async function HomePage() {
@@ -10,10 +9,8 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-screen">
-      <Hero />
-
       {/* Featured Posts Section */}
-      <section id="featured" className="py-16 px-4 sm:px-6 lg:px-8 relative">
+      <section id="featured" className="pt-24 py-16 px-4 sm:px-6 lg:px-8 relative">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-50/30 to-transparent dark:via-blue-900/10" />
         <div className="relative z-10 max-w-7xl mx-auto">
           <div className="text-center mb-12">
