@@ -2,6 +2,19 @@ import Link from "next/link"
 import { getAllCategories, getAllTags } from "@/lib/blog"
 import { Folder, Tag } from "lucide-react"
 
+// Helper function to format display names
+const formatDisplayName = (name: string) => {
+  return name
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ")
+}
+
+// Helper function to format URL slugs
+const formatUrlSlug = (name: string) => {
+  return name.toLowerCase().replace(/\s+/g, "-")
+}
+
 export async function CategoriesTagsSidebar() {
   const categories = await getAllCategories()
   const tags = await getAllTags()
@@ -17,15 +30,19 @@ export async function CategoriesTagsSidebar() {
           <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">Categories</h3>
         </div>
         <div className="space-y-2">
-          {categories.map((category) => (
-            <Link
-              key={category}
-              href={`/category/${category}`}
-              className="block px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-all duration-200 capitalize"
-            >
-              {category}
-            </Link>
-          ))}
+          {categories.map((category) => {
+            const displayCategory = formatDisplayName(category)
+            const categorySlug = formatUrlSlug(category)
+            return (
+              <Link
+                key={category}
+                href={`/category/${categorySlug}`}
+                className="block px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-all duration-200"
+              >
+                {displayCategory}
+              </Link>
+            )
+          })}
         </div>
       </div>
 
@@ -38,15 +55,19 @@ export async function CategoriesTagsSidebar() {
           <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">Tags</h3>
         </div>
         <div className="flex flex-wrap gap-2">
-          {tags.map((tag) => (
-            <Link
-              key={tag}
-              href={`/tag/${tag}`}
-              className="px-3 py-1 text-sm bg-gradient-to-r from-gray-100/80 to-gray-200/80 dark:from-gray-700/80 dark:to-gray-600/80 text-gray-700 dark:text-gray-300 rounded-full hover:from-blue-100/80 hover:to-purple-100/80 dark:hover:from-blue-900/50 dark:hover:to-purple-900/50 hover:text-blue-700 dark:hover:text-blue-300 transition-all duration-200 backdrop-blur-sm"
-            >
-              {tag}
-            </Link>
-          ))}
+          {tags.map((tag) => {
+            const displayTag = formatDisplayName(tag)
+            const tagSlug = formatUrlSlug(tag)
+            return (
+              <Link
+                key={tag}
+                href={`/tag/${tagSlug}`}
+                className="px-3 py-1 text-sm bg-gradient-to-r from-gray-100/80 to-gray-200/80 dark:from-gray-700/80 dark:to-gray-600/80 text-gray-700 dark:text-gray-300 rounded-full hover:from-blue-100/80 hover:to-purple-100/80 dark:hover:from-blue-900/50 dark:hover:to-purple-900/50 hover:text-blue-700 dark:hover:text-blue-300 transition-all duration-200 backdrop-blur-sm"
+              >
+                {displayTag}
+              </Link>
+            )
+          })}
         </div>
       </div>
     </div>
