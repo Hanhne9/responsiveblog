@@ -1,0 +1,30 @@
+# Protect the admin directory
+# Uncomment the lines below to enable basic authentication
+# AuthType Basic
+# AuthName "Admin Area"
+# AuthUserFile /path/to/.htpasswd
+# Require valid-user
+
+# Prevent directory listing
+Options -Indexes
+
+# PHP error handling
+php_flag display_errors off
+php_value error_reporting E_ALL
+
+# Prevent access to .htaccess
+<Files .htaccess>
+    Order allow,deny
+    Deny from all
+</Files>
+
+# Prevent PHP files from being accessed except index.php, edit.php, and upload.php
+<FilesMatch "\.php$">
+    Order Deny,Allow
+    Deny from all
+</FilesMatch>
+
+<FilesMatch "(index|edit|upload)\.php$">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch>
