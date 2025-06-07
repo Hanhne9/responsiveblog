@@ -9,21 +9,43 @@ interface CategoryPageProps {
   }
 }
 
+// Helper function to format display names
+const formatDisplayName = (name: string) => {
+  return name
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ")
+}
+
+// Helper function to format URL slugs
+const formatUrlSlug = (name: string) => {
+  return name.toLowerCase().replace(/\s+/g, "-")
+}
+
 export async function generateStaticParams() {
   const categories = await getAllCategories()
   return categories.map((category) => ({
-    category: category,
+    category: formatUrlSlug(category),
   }))
 }
 
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
-  const posts = await getPostsByCategory(params.category)
+  const categorySlug = params.category
+  const categoryName = formatDisplayName(categorySlug)
+
+  // Find posts by matching the formatted slug
+  const allCategories = await getAllCategories()
+  const matchingCategory = allCategories.find((cat) => formatUrlSlug(cat) === categorySlug)
+
+  if (!matchingCategory) {
+    return {}
+  }
+
+  const posts = await getPostsByCategory(matchingCategory)
 
   if (posts.length === 0) {
     return {}
   }
-
-  const categoryName = params.category.charAt(0).toUpperCase() + params.category.slice(1)
 
   return {
     title: `${categoryName} Posts`,
@@ -37,13 +59,22 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
 }
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
-  const posts = await getPostsByCategory(params.category)
+  const categorySlug = params.category
+  const categoryName = formatDisplayName(categorySlug)
+
+  // Find posts by matching the formatted slug
+  const allCategories = await getAllCategories()
+  const matchingCategory = allCategories.find((cat) => formatUrlSlug(cat) === categorySlug)
+
+  if (!matchingCategory) {
+    notFound()
+  }
+
+  const posts = await getPostsByCategory(matchingCategory)
 
   if (posts.length === 0) {
     notFound()
   }
-
-  const categoryName = params.category.charAt(0).toUpperCase() + params.category.slice(1)
 
   return (
     <div className="min-h-screen py-16 px-4 sm:px-6 lg:px-8">

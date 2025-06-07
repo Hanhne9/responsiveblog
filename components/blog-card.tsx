@@ -7,7 +7,23 @@ interface BlogCardProps {
   post: BlogPost
 }
 
+// Helper function to format display names
+const formatDisplayName = (name: string) => {
+  return name
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ")
+}
+
+// Helper function to format URL slugs
+const formatUrlSlug = (name: string) => {
+  return name.toLowerCase().replace(/\s+/g, "-")
+}
+
 export function BlogCard({ post }: BlogCardProps) {
+  const displayCategory = formatDisplayName(post.category)
+  const categorySlug = formatUrlSlug(post.category)
+
   return (
     <article className="group glass-card rounded-2xl overflow-hidden card-hover">
       {post.coverImage && (
@@ -25,15 +41,15 @@ export function BlogCard({ post }: BlogCardProps) {
       <div className="p-6">
         <div className="mb-4">
           <Link
-            href={`/category/${post.category}`}
+            href={`/category/${categorySlug}`}
             className="inline-block px-3 py-1 text-xs font-medium bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-700 dark:text-blue-300 rounded-full border border-blue-200/50 dark:border-blue-700/50 hover:from-blue-500/30 hover:to-purple-500/30 transition-all duration-200"
           >
-            {post.category}
+            {displayCategory}
           </Link>
         </div>
 
         <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-3 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200">
-          <Link href={`/${post.category}/${post.slug}`}>{post.title}</Link>
+          <Link href={`/${categorySlug}/${post.slug}`}>{post.title}</Link>
         </h3>
 
         <p className="text-gray-600 dark:text-gray-400 mb-4 line-clamp-2 text-sm leading-relaxed">{post.excerpt}</p>
@@ -56,7 +72,7 @@ export function BlogCard({ post }: BlogCardProps) {
         </div>
 
         <Link
-          href={`/${post.category}/${post.slug}`}
+          href={`/${categorySlug}/${post.slug}`}
           className="inline-flex items-center space-x-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium text-sm group/link"
         >
           <span>Read more</span>

@@ -9,22 +9,43 @@ interface TagPageProps {
   }
 }
 
+// Helper function to format display names
+const formatDisplayName = (name: string) => {
+  return name
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ")
+}
+
+// Helper function to format URL slugs
+const formatUrlSlug = (name: string) => {
+  return name.toLowerCase().replace(/\s+/g, "-")
+}
+
 export async function generateStaticParams() {
   const tags = await getAllTags()
   return tags.map((tag) => ({
-    tag: encodeURIComponent(tag),
+    tag: formatUrlSlug(tag),
   }))
 }
 
 export async function generateMetadata({ params }: TagPageProps): Promise<Metadata> {
-  const decodedTag = decodeURIComponent(params.tag)
-  const posts = await getPostsByTag(decodedTag)
+  const tagSlug = params.tag
+  const tagName = formatDisplayName(tagSlug)
+
+  // Find posts by matching the formatted slug
+  const allTags = await getAllTags()
+  const matchingTag = allTags.find((tag) => formatUrlSlug(tag) === tagSlug)
+
+  if (!matchingTag) {
+    return {}
+  }
+
+  const posts = await getPostsByTag(matchingTag)
 
   if (posts.length === 0) {
     return {}
   }
-
-  const tagName = decodedTag.charAt(0).toUpperCase() + decodedTag.slice(1)
 
   return {
     title: `Posts tagged with "${tagName}"`,
@@ -38,14 +59,22 @@ export async function generateMetadata({ params }: TagPageProps): Promise<Metada
 }
 
 export default async function TagPage({ params }: TagPageProps) {
-  const decodedTag = decodeURIComponent(params.tag)
-  const posts = await getPostsByTag(decodedTag)
+  const tagSlug = params.tag
+  const tagName = formatDisplayName(tagSlug)
+
+  // Find posts by matching the formatted slug
+  const allTags = await getAllTags()
+  const matchingTag = allTags.find((tag) => formatUrlSlug(tag) === tagSlug)
+
+  if (!matchingTag) {
+    notFound()
+  }
+
+  const posts = await getPostsByTag(matchingTag)
 
   if (posts.length === 0) {
     notFound()
   }
-
-  const tagName = decodedTag.charAt(0).toUpperCase() + decodedTag.slice(1)
 
   return (
     <div className="min-h-screen py-16 px-4 sm:px-6 lg:px-8">
