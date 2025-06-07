@@ -6,8 +6,19 @@ import Link from "next/link"
 import { useState, useEffect } from "react"
 import { Menu, X, BookOpen, Search, Sun, Moon, ChevronDown, Folder } from "lucide-react"
 import { useTheme } from "next-themes"
-import { getAllCategories, getAllPosts } from "@/lib/blog"
-import type { BlogPost } from "@/lib/blog"
+
+// Define the BlogPost type here to avoid importing from lib/blog
+interface BlogPost {
+  slug: string
+  title: string
+  date: string
+  excerpt: string
+  author: string
+  tags: string[]
+  category: string
+  coverImage?: string
+  readingTime: number
+}
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
@@ -19,7 +30,6 @@ export function Navigation() {
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false)
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
-  const [allPosts, setAllPosts] = useState<BlogPost[]>([])
 
   useEffect(() => {
     setMounted(true)
@@ -28,36 +38,35 @@ export function Navigation() {
     }
     window.addEventListener("scroll", handleScroll)
 
-    // Load categories and posts
-    const loadData = async () => {
-      const [categoriesData, postsData] = await Promise.all([getAllCategories(), getAllPosts()])
-      setCategories(categoriesData)
-      setAllPosts(postsData)
-    }
-    loadData()
+    // Fetch categories from API
+    fetch("/api/categories")
+      .then((res) => res.json())
+      .then((data) => setCategories(data))
+      .catch((err) => console.error("Failed to load categories:", err))
 
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
   useEffect(() => {
-    if (searchQuery.trim()) {
-      const filtered = allPosts.filter(
-        (post) =>
-          post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          post.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          post.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase())) ||
-          post.category.toLowerCase().includes(searchQuery.toLowerCase()),
-      )
-      setSearchResults(filtered)
-    } else {
-      setSearchResults([])
-    }
-  }, [searchQuery, allPosts])
+    // Debounce search
+    const handler = setTimeout(() => {
+      if (searchQuery.trim()) {
+        fetch(`/api/search?q=${encodeURIComponent(searchQuery)}`)
+          .then((res) => res.json())
+          .then((data) => setSearchResults(data))
+          .catch((err) => console.error("Search failed:", err))
+      } else {
+        setSearchResults([])
+      }
+    }, 300)
+
+    return () => clearTimeout(handler)
+  }, [searchQuery])
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
     if (searchQuery.trim() && searchResults.length > 0) {
-      // Navigate to first result or show results page
+      // Navigate to first result
       window.location.href = `/blog/${searchResults[0].slug}`
     }
   }
