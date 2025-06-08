@@ -1,1 +1,62 @@
-[]
+[
+    {
+        "id": "technology",
+        "name": "Công nghệ",
+        "description": "Bài viết về công nghệ mới nhất",
+        "color": "#3b82f6"
+    },
+    {
+        "id": "programming",
+        "name": "Lập trình",
+        "description": "Hướng dẫn và kinh nghiệm lập trình",
+        "color": "#10b981"
+    },
+    {
+        "id": "web-development",
+        "name": "Phát triển Web",
+        "description": "Frontend, Backend và Full-stack development",
+        "color": "#f59e0b"
+    },
+    {
+        "id": "tutorial",
+        "name": "Hướng dẫn",
+        "description": "Các bài hướng dẫn chi tiết",
+        "color": "#8b5cf6"
+    },
+    {
+        "id": "javascript",
+        "name": "JavaScript",
+        "description": "Bài viết về JavaScript và các framework",
+        "color": "#f97316"
+    },
+    {
+        "id": "react",
+        "name": "React",
+        "description": "React.js và ecosystem",
+        "color": "#06b6d4"
+    },
+    {
+        "id": "nextjs",
+        "name": "Next.js",
+        "description": "Framework React cho production",
+        "color": "#000000"
+    },
+    {
+        "id": "css",
+        "name": "CSS",
+        "description": "Styling và design",
+        "color": "#ec4899"
+    },
+    {
+        "id": "tools",
+        "name": "Công cụ",
+        "description": "Các công cụ hữu ích cho developer",
+        "color": "#6b7280"
+    },
+    {
+        "id": "tips",
+        "name": "Mẹo hay",
+        "description": "Các mẹo và thủ thuật hữu ích",
+        "color": "#ef4444"
+    }
+]
